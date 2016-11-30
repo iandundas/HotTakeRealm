@@ -1,5 +1,5 @@
 //
-//  DatasourceContainerTests.swift
+//  ContainerTests.swift
 //  ReactiveKitSwappableDatasource
 //
 //  Created by Ian Dundas on 15/05/2016.
@@ -10,19 +10,20 @@ import XCTest
 import ReactiveKit
 import Nimble
 import RealmSwift
+import HotTakeCore
 
-@testable import ReactiveKitSwappableDatasource
+@testable import HotTakeRealm
 
 typealias ChangesetProperty = ReactiveKit.Property<CollectionChangeset<[Cat]>?>
 
-class DatasourceContainerWithRealmTests: XCTestCase {
+class ContainerWithRealmTests: XCTestCase {
     
     var emptyRealm: Realm!
     var nonEmptyRealm: Realm!
     
     var disposeBag = DisposeBag()
     
-    var container: DatasourceContainer<Cat>!
+    var container: Container<Cat>!
     
     override func setUp() {
         super.setUp()
@@ -201,7 +202,7 @@ class DatasourceContainerWithRealmTests: XCTestCase {
         
         var observeCallCount = 0
         
-        container = DatasourceContainer(datasource: emptyRealmDataSource)
+        container = Container(datasource: emptyRealmDataSource)
         container.collection
             .observeNext { changes in
                 observeCallCount += 1
@@ -298,7 +299,7 @@ class DatasourceContainerWithRealmTests: XCTestCase {
         var updateCount = 0
         var deleteCount = 0
         
-        container = DatasourceContainer(datasource: dataSourceA)
+        container = Container(datasource: dataSourceA)
         container.collection
             .observeNext { changes in
                 observeCallCount += 1
@@ -330,7 +331,7 @@ class DatasourceContainerWithRealmTests: XCTestCase {
         var updateCount = 0
         var deleteCount = 0
         
-        container = DatasourceContainer(datasource: dataSourceA)
+        container = Container(datasource: dataSourceA)
         container.collection
             .observeNext { changes in
                 if observeCallCount == 0 && !changes.hasNoMutations{

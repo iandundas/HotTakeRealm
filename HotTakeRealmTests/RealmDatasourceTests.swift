@@ -11,8 +11,9 @@ import XCTest
 import RealmSwift
 import ReactiveKit
 import Nimble
+import HotTakeCore
 
-@testable import ReactiveKitSwappableDatasource
+@testable import HotTakeRealm
 
 class RealmDatasourceTests: XCTestCase {
 

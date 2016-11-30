@@ -1,5 +1,5 @@
 //
-//  DatasourceContainerWithManualTests.swift
+//  ContainerWithManualTests.swift
 //  ReactiveKitSwappableDatasource
 //
 //  Created by Ian Dundas on 05/06/2016.
@@ -9,10 +9,11 @@
 import XCTest
 import ReactiveKit
 import Nimble
+import HotTakeCore
 
-@testable import ReactiveKitSwappableDatasource
+@testable import HotTakeRealm
 
-class DatasourceContainerWithManualTests: XCTestCase {
+class ContainerWithManualTests: XCTestCase {
 
     let bag = DisposeBag()
     

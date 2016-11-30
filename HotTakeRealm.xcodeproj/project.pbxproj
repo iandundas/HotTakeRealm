@@ -19,6 +19,7 @@
 		3CEB6DE71DEEBBE100D35A77 /* RealmNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DE51DEEBBE100D35A77 /* RealmNotificationTests.swift */; };
 		3CEB6DEC1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEA1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift */; };
 		3CEB6DED1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */; };
+		3CEB6DF01DEEC0BD00D35A77 /* Cat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEF1DEEC0BD00D35A77 /* Cat.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		3CEB6DE51DEEBBE100D35A77 /* RealmNotificationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmNotificationTests.swift; sourceTree = "<group>"; };
 		3CEB6DEA1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatasourceContainerWithManualTests.swift; sourceTree = "<group>"; };
 		3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatasourceContainerWithRealmTests.swift; sourceTree = "<group>"; };
+		3CEB6DEF1DEEC0BD00D35A77 /* Cat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cat.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 		3CEB6DC91DEE9A3E00D35A77 /* HotTakeRealmTests */ = {
 			isa = PBXGroup;
 			children = (
+				3CEB6DEE1DEEC09D00D35A77 /* Model */,
 				3CEB6DE91DEEBBFD00D35A77 /* Container */,
 				3CEB6DE81DEEBBF700D35A77 /* Datasource */,
 				3CEB6DCC1DEE9A3E00D35A77 /* Info.plist */,
@@ -148,6 +151,14 @@
 				3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */,
 			);
 			name = Container;
+			sourceTree = "<group>";
+		};
+		3CEB6DEE1DEEC09D00D35A77 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3CEB6DEF1DEEC0BD00D35A77 /* Cat.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,6 +285,7 @@
 			files = (
 				3CEB6DED1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift in Sources */,
 				3CEB6DE71DEEBBE100D35A77 /* RealmNotificationTests.swift in Sources */,
+				3CEB6DF01DEEC0BD00D35A77 /* Cat.swift in Sources */,
 				3CEB6DE61DEEBBE100D35A77 /* RealmDatasourceTests.swift in Sources */,
 				3CEB6DEC1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift in Sources */,
 			);

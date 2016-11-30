@@ -4,7 +4,8 @@ import RealmSwift
 import ReactiveKit
 import Nimble
 
-@testable import ReactiveKitSwappableDatasource
+
+@testable import HotTakeRealm
 
 /*  
     Realm should provide to us an initial notification containing the fetched results, and then
