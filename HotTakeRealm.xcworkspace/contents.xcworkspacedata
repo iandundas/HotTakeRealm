@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Carthage/Checkouts/realm-cocoa/Realm.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Carthage/Checkouts/ReactiveKit/ReactiveKit.xcodeproj">
    </FileRef>
    <FileRef

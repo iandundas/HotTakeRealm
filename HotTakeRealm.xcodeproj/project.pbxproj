@@ -8,8 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		3CEB6DC61DEE9A3E00D35A77 /* HotTakeRealm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DBC1DEE9A3E00D35A77 /* HotTakeRealm.framework */; };
-		3CEB6DCB1DEE9A3E00D35A77 /* HotTakeRealmTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DCA1DEE9A3E00D35A77 /* HotTakeRealmTests.swift */; };
 		3CEB6DCD1DEE9A3E00D35A77 /* HotTakeRealm.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CEB6DBF1DEE9A3E00D35A77 /* HotTakeRealm.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3CEB6DD81DEEBAAE00D35A77 /* ReactiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DD71DEEBAAE00D35A77 /* ReactiveKit.framework */; };
+		3CEB6DDA1DEEBABA00D35A77 /* HotTakeCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DD91DEEBABA00D35A77 /* HotTakeCore.framework */; };
+		3CEB6DDC1DEEBAD300D35A77 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DDB1DEEBAD300D35A77 /* Nimble.framework */; };
+		3CEB6DDF1DEEBAEC00D35A77 /* RealmDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DDE1DEEBAEC00D35A77 /* RealmDataSource.swift */; };
+		3CEB6DE21DEEBB8A00D35A77 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DE01DEEBB8A00D35A77 /* Realm.framework */; };
+		3CEB6DE31DEEBB8A00D35A77 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DE11DEEBB8A00D35A77 /* RealmSwift.framework */; };
+		3CEB6DE61DEEBBE100D35A77 /* RealmDatasourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DE41DEEBBE100D35A77 /* RealmDatasourceTests.swift */; };
+		3CEB6DE71DEEBBE100D35A77 /* RealmNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DE51DEEBBE100D35A77 /* RealmNotificationTests.swift */; };
+		3CEB6DEC1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEA1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift */; };
+		3CEB6DED1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,8 +36,17 @@
 		3CEB6DBF1DEE9A3E00D35A77 /* HotTakeRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HotTakeRealm.h; sourceTree = "<group>"; };
 		3CEB6DC01DEE9A3E00D35A77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3CEB6DC51DEE9A3E00D35A77 /* HotTakeRealmTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HotTakeRealmTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3CEB6DCA1DEE9A3E00D35A77 /* HotTakeRealmTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotTakeRealmTests.swift; sourceTree = "<group>"; };
 		3CEB6DCC1DEE9A3E00D35A77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3CEB6DD71DEEBAAE00D35A77 /* ReactiveKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveKit.framework; path = "../../../Desktop/Build/Products/Debug-iphonesimulator/ReactiveKit.framework"; sourceTree = "<group>"; };
+		3CEB6DD91DEEBABA00D35A77 /* HotTakeCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HotTakeCore.framework; path = "../../../Desktop/Build/Products/Debug-iphonesimulator/HotTakeCore.framework"; sourceTree = "<group>"; };
+		3CEB6DDB1DEEBAD300D35A77 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "../../../Desktop/Build/Products/Debug-iphonesimulator/Nimble.framework"; sourceTree = "<group>"; };
+		3CEB6DDE1DEEBAEC00D35A77 /* RealmDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmDataSource.swift; sourceTree = "<group>"; };
+		3CEB6DE01DEEBB8A00D35A77 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = "Carthage/Checkouts/realm-cocoa/build/Debug/Realm.framework"; sourceTree = "<group>"; };
+		3CEB6DE11DEEBB8A00D35A77 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = "Carthage/Checkouts/realm-cocoa/build/Debug/RealmSwift.framework"; sourceTree = "<group>"; };
+		3CEB6DE41DEEBBE100D35A77 /* RealmDatasourceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmDatasourceTests.swift; sourceTree = "<group>"; };
+		3CEB6DE51DEEBBE100D35A77 /* RealmNotificationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmNotificationTests.swift; sourceTree = "<group>"; };
+		3CEB6DEA1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatasourceContainerWithManualTests.swift; sourceTree = "<group>"; };
+		3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatasourceContainerWithRealmTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +54,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CEB6DE21DEEBB8A00D35A77 /* Realm.framework in Frameworks */,
+				3CEB6DE31DEEBB8A00D35A77 /* RealmSwift.framework in Frameworks */,
+				3CEB6DDA1DEEBABA00D35A77 /* HotTakeCore.framework in Frameworks */,
+				3CEB6DD81DEEBAAE00D35A77 /* ReactiveKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CEB6DDC1DEEBAD300D35A77 /* Nimble.framework in Frameworks */,
 				3CEB6DC61DEE9A3E00D35A77 /* HotTakeRealm.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,6 +79,7 @@
 				3CEB6DBE1DEE9A3E00D35A77 /* HotTakeRealm */,
 				3CEB6DC91DEE9A3E00D35A77 /* HotTakeRealmTests */,
 				3CEB6DBD1DEE9A3E00D35A77 /* Products */,
+				3CEB6DD61DEEBAAE00D35A77 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +95,7 @@
 		3CEB6DBE1DEE9A3E00D35A77 /* HotTakeRealm */ = {
 			isa = PBXGroup;
 			children = (
+				3CEB6DDD1DEEBADE00D35A77 /* Sources */,
 				3CEB6DBF1DEE9A3E00D35A77 /* HotTakeRealm.h */,
 				3CEB6DC01DEE9A3E00D35A77 /* Info.plist */,
 			);
@@ -80,10 +105,49 @@
 		3CEB6DC91DEE9A3E00D35A77 /* HotTakeRealmTests */ = {
 			isa = PBXGroup;
 			children = (
-				3CEB6DCA1DEE9A3E00D35A77 /* HotTakeRealmTests.swift */,
+				3CEB6DE91DEEBBFD00D35A77 /* Container */,
+				3CEB6DE81DEEBBF700D35A77 /* Datasource */,
 				3CEB6DCC1DEE9A3E00D35A77 /* Info.plist */,
 			);
 			path = HotTakeRealmTests;
+			sourceTree = "<group>";
+		};
+		3CEB6DD61DEEBAAE00D35A77 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3CEB6DE01DEEBB8A00D35A77 /* Realm.framework */,
+				3CEB6DE11DEEBB8A00D35A77 /* RealmSwift.framework */,
+				3CEB6DDB1DEEBAD300D35A77 /* Nimble.framework */,
+				3CEB6DD91DEEBABA00D35A77 /* HotTakeCore.framework */,
+				3CEB6DD71DEEBAAE00D35A77 /* ReactiveKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3CEB6DDD1DEEBADE00D35A77 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				3CEB6DDE1DEEBAEC00D35A77 /* RealmDataSource.swift */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		3CEB6DE81DEEBBF700D35A77 /* Datasource */ = {
+			isa = PBXGroup;
+			children = (
+				3CEB6DE41DEEBBE100D35A77 /* RealmDatasourceTests.swift */,
+				3CEB6DE51DEEBBE100D35A77 /* RealmNotificationTests.swift */,
+			);
+			name = Datasource;
+			sourceTree = "<group>";
+		};
+		3CEB6DE91DEEBBFD00D35A77 /* Container */ = {
+			isa = PBXGroup;
+			children = (
+				3CEB6DEA1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift */,
+				3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */,
+			);
+			name = Container;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -149,11 +213,13 @@
 					3CEB6DBB1DEE9A3E00D35A77 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = N8N37QWHHP;
+						LastSwiftMigration = 0810;
 						ProvisioningStyle = Automatic;
 					};
 					3CEB6DC41DEE9A3E00D35A77 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = N8N37QWHHP;
+						LastSwiftMigration = 0810;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -198,6 +264,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CEB6DDF1DEEBAEC00D35A77 /* RealmDataSource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,7 +272,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CEB6DCB1DEE9A3E00D35A77 /* HotTakeRealmTests.swift in Sources */,
+				3CEB6DED1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift in Sources */,
+				3CEB6DE71DEEBBE100D35A77 /* RealmNotificationTests.swift in Sources */,
+				3CEB6DE61DEEBBE100D35A77 /* RealmDatasourceTests.swift in Sources */,
+				3CEB6DEC1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,60 +394,78 @@
 		3CEB6DD11DEE9A3E00D35A77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = N8N37QWHHP;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/realm-cocoa/build/Debug",
+				);
 				INFOPLIST_FILE = HotTakeRealm/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.iandundas.HotTakeRealm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
 		3CEB6DD21DEE9A3E00D35A77 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = N8N37QWHHP;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/realm-cocoa/build/Debug",
+				);
 				INFOPLIST_FILE = HotTakeRealm/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.iandundas.HotTakeRealm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
 		3CEB6DD41DEE9A3E00D35A77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = N8N37QWHHP;
 				INFOPLIST_FILE = HotTakeRealmTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.iandundas.HotTakeRealmTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
 		3CEB6DD51DEE9A3E00D35A77 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = N8N37QWHHP;
 				INFOPLIST_FILE = HotTakeRealmTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.iandundas.HotTakeRealmTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -400,6 +488,7 @@
 				3CEB6DD21DEE9A3E00D35A77 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3CEB6DD31DEE9A3E00D35A77 /* Build configuration list for PBXNativeTarget "HotTakeRealmTests" */ = {
 			isa = XCConfigurationList;
@@ -408,6 +497,7 @@
 				3CEB6DD51DEE9A3E00D35A77 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
