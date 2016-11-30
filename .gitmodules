@@ -6,3 +6,4 @@
 	url = https://github.com/ReactiveKit/ReactiveKit.git
 [submodule "Carthage/Checkouts/HotTakeCore"]
 	url = https://github.com/iandundas/HotTakeCore.git
+	path = Carthage/Checkouts/HotTakeCore
