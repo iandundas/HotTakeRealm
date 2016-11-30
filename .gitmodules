@@ -7,3 +7,6 @@
 [submodule "Carthage/Checkouts/HotTakeCore"]
 	url = https://github.com/iandundas/HotTakeCore.git
 	path = Carthage/Checkouts/HotTakeCore
+[submodule "Carthage/Checkouts/realm-cocoa"]
+	path = Carthage/Checkouts/realm-cocoa
+	url = https://github.com/realm/realm-cocoa.git
