@@ -9,6 +9,7 @@
 import UIKit
 import ReactiveKit
 import RealmSwift
+import HotTakeCore
 
 extension AnyRealmCollection{
     func items()-> [Element]{
