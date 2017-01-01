@@ -17,7 +17,6 @@
 		3CEB6DE31DEEBB8A00D35A77 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DE11DEEBB8A00D35A77 /* RealmSwift.framework */; };
 		3CEB6DE61DEEBBE100D35A77 /* RealmDatasourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DE41DEEBBE100D35A77 /* RealmDatasourceTests.swift */; };
 		3CEB6DE71DEEBBE100D35A77 /* RealmNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DE51DEEBBE100D35A77 /* RealmNotificationTests.swift */; };
-		3CEB6DEC1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEA1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift */; };
 		3CEB6DED1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */; };
 		3CEB6DF01DEEC0BD00D35A77 /* Cat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEF1DEEC0BD00D35A77 /* Cat.swift */; };
 /* End PBXBuildFile section */
@@ -46,7 +45,6 @@
 		3CEB6DE11DEEBB8A00D35A77 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = "Carthage/Checkouts/realm-cocoa/build/Debug/RealmSwift.framework"; sourceTree = "<group>"; };
 		3CEB6DE41DEEBBE100D35A77 /* RealmDatasourceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmDatasourceTests.swift; sourceTree = "<group>"; };
 		3CEB6DE51DEEBBE100D35A77 /* RealmNotificationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmNotificationTests.swift; sourceTree = "<group>"; };
-		3CEB6DEA1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatasourceContainerWithManualTests.swift; sourceTree = "<group>"; };
 		3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatasourceContainerWithRealmTests.swift; sourceTree = "<group>"; };
 		3CEB6DEF1DEEC0BD00D35A77 /* Cat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cat.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -147,7 +145,6 @@
 		3CEB6DE91DEEBBFD00D35A77 /* Container */ = {
 			isa = PBXGroup;
 			children = (
-				3CEB6DEA1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift */,
 				3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */,
 			);
 			name = Container;
@@ -287,7 +284,6 @@
 				3CEB6DE71DEEBBE100D35A77 /* RealmNotificationTests.swift in Sources */,
 				3CEB6DF01DEEC0BD00D35A77 /* Cat.swift in Sources */,
 				3CEB6DE61DEEBBE100D35A77 /* RealmDatasourceTests.swift in Sources */,
-				3CEB6DEC1DEEBC1400D35A77 /* DatasourceContainerWithManualTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
