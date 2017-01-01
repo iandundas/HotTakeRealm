@@ -5,7 +5,7 @@
 	path = Carthage/Checkouts/ReactiveKit
 	url = https://github.com/ReactiveKit/ReactiveKit.git
 [submodule "Carthage/Checkouts/HotTakeCore"]
-	url = https://github.com/iandundas/HotTakeCore.git
+	url = /Users/ian/AppsDev/Hottake/HotTakeCore
 	path = Carthage/Checkouts/HotTakeCore
 [submodule "Carthage/Checkouts/realm-cocoa"]
 	path = Carthage/Checkouts/realm-cocoa
