@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3CA8B6A61E197F7400E5CC8F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA8B6A51E197F7400E5CC8F /* Helpers.swift */; };
 		3CEB6DC61DEE9A3E00D35A77 /* HotTakeRealm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DBC1DEE9A3E00D35A77 /* HotTakeRealm.framework */; };
 		3CEB6DCD1DEE9A3E00D35A77 /* HotTakeRealm.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CEB6DBF1DEE9A3E00D35A77 /* HotTakeRealm.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3CEB6DD81DEEBAAE00D35A77 /* ReactiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DD71DEEBAAE00D35A77 /* ReactiveKit.framework */; };
@@ -17,7 +18,6 @@
 		3CEB6DE31DEEBB8A00D35A77 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DE11DEEBB8A00D35A77 /* RealmSwift.framework */; };
 		3CEB6DE61DEEBBE100D35A77 /* RealmDatasourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DE41DEEBBE100D35A77 /* RealmDatasourceTests.swift */; };
 		3CEB6DE71DEEBBE100D35A77 /* RealmNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DE51DEEBBE100D35A77 /* RealmNotificationTests.swift */; };
-		3CEB6DED1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */; };
 		3CEB6DF01DEEC0BD00D35A77 /* Cat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEF1DEEC0BD00D35A77 /* Cat.swift */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3CA8B6A51E197F7400E5CC8F /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		3CEB6DBC1DEE9A3E00D35A77 /* HotTakeRealm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HotTakeRealm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CEB6DBF1DEE9A3E00D35A77 /* HotTakeRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HotTakeRealm.h; sourceTree = "<group>"; };
 		3CEB6DC01DEE9A3E00D35A77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -105,6 +106,7 @@
 		3CEB6DC91DEE9A3E00D35A77 /* HotTakeRealmTests */ = {
 			isa = PBXGroup;
 			children = (
+				3CA8B6A51E197F7400E5CC8F /* Helpers.swift */,
 				3CEB6DEE1DEEC09D00D35A77 /* Model */,
 				3CEB6DE91DEEBBFD00D35A77 /* Container */,
 				3CEB6DE81DEEBBF700D35A77 /* Datasource */,
@@ -215,7 +217,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Ian Dundas";
 				TargetAttributes = {
 					3CEB6DBB1DEE9A3E00D35A77 = {
@@ -280,9 +282,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CEB6DED1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift in Sources */,
 				3CEB6DE71DEEBBE100D35A77 /* RealmNotificationTests.swift in Sources */,
 				3CEB6DF01DEEC0BD00D35A77 /* Cat.swift in Sources */,
+				3CA8B6A61E197F7400E5CC8F /* Helpers.swift in Sources */,
 				3CEB6DE61DEEBBE100D35A77 /* RealmDatasourceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -316,6 +318,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -370,6 +373,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

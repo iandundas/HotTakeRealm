@@ -8,14 +8,16 @@
 
 import UIKit
 import ReactiveKit
+import Bond
 import RealmSwift
 import HotTakeCore
 
-extension AnyRealmCollection{
+// Causes compiler crash:
+/* extension AnyRealmCollection{
     func items()-> [Element]{
         return filter{_ in true}
     }
-}
+}*/
 
 open class RealmDataSource<Item: Object>: DataSourceType where Item: Equatable {
 
@@ -27,60 +29,105 @@ open class RealmDataSource<Item: Object>: DataSourceType where Item: Equatable {
      */
 
     open func items() -> [Item] {
-        return self.collection.items()
+        return self.collection.filter{_ in true}
     }
 
     open func mutations() -> Signal1<ObservableArrayEvent<Item>> {
-        return Stream<CollectionChangeset<[Item]>> { observer in
+        return Signal1<ObservableArrayEvent<Item>> { observer in
             let bag = DisposeBag()
             
-            var initialChangeSet: CollectionChangeset? = CollectionChangeset.initial(self.items())
-            observer.next(initialChangeSet!)
+//            var initialChangeSet: CollectionChangeset? = CollectionChangeset.initial(self.items())
+//            observer.next(initialChangeSet!)
             
             let notificationToken = self.collection.addNotificationBlock {(changes: RealmCollectionChange) in
 
+                
                 switch changes {
-                case .Initial(let initialCollection):
                     
-                    if let initialItems = initialChangeSet?.collection {
-                        initialChangeSet = nil
-                        
-                        // Realm .initial event clashes with our own. Need to work out if it's any different to the
-                        // event we sent observers when they first observed
-                        if initialCollection.elementsEqual(initialItems){
-                            // If it's the same we want to suppress it totally
-                            break;
-                        }
-                        else{
-                            // If it's different, we need to manually diff Realm's .initial with our own
-                            // and provide that diff as the real initial event.
-                            let tempCollection = CollectionProperty(initialItems)
-                            
-                            tempCollection.skip(1).observeNext(observer.next).disposeIn(bag)
-                            tempCollection.replace(initialCollection.items(), performDiff: true)
-                            break;
-                        }
-                    }
-                    else {
-                        let insertIndexes = (initialCollection.startIndex ..< initialCollection.endIndex).map {$0}
-                        let changeSet = CollectionChangeset(collection: initialCollection.items(), inserts: insertIndexes, deletes: [], updates: [])
-                        observer.next(changeSet)
+                case .initial(let initialCollection):
+                    let source = ObservableArray(initialCollection.filter{_ in true})
+                    let event = ObservableArrayEvent<Item>(change: .reset, source: source)
+                    observer.next(event)
+                    
+                case .update(let updatedCollection, let deletions, let insertions, let modifications):
+                    guard deletions.count > 0 || insertions.count > 0 || modifications.count > 0 else {break}
+
+                    let source = ObservableArray(updatedCollection.filter{_ in true})
+                    
+                    // Begin
+                    observer.next(ObservableArrayEvent<Item>(
+                        change: .beginBatchEditing,
+                        source: source))
+                    
+                    // in Bond the order is: Insert/ Delete/ Move
+                    
+                    if insertions.count > 0 {
+                        observer.next(ObservableArrayEvent<Item>(
+                            change: ObservableArrayChange.inserts(insertions),
+                            source: source))
                     }
                     
-                case .Update(let updatedCollection, let deletions, let insertions, let modifications):
-                    let changeSet = CollectionChangeset(collection: updatedCollection.items(), inserts: insertions, deletes: deletions, updates: modifications)
-                    observer.next(changeSet)
-
-                case .Error(let error):
-
+                    if deletions.count > 0 {
+                        observer.next(ObservableArrayEvent<Item>(
+                            change: ObservableArrayChange.deletes(deletions),
+                            source: source))
+                    }
+                    
+                    if modifications.count > 0 {
+                        observer.next(ObservableArrayEvent<Item>(
+                            change: ObservableArrayChange.updates(modifications),
+                            source: source))
+                    }
+                    
+                    observer.next(ObservableArrayEvent<Item>(change: .endBatchEditing, source: source))
+                    
+                case .error(let error):
                     // An error occurred while opening the Realm file on the background worker thread
                     fatalError("\(error)")
-                    break
                 }
+                
+                
+//                switch changes {
+//                case .Initial(let initialCollection):
+//                    
+//                    if let initialItems = initialChangeSet?.collection {
+//                        initialChangeSet = nil
+//                        
+//                        // Realm .initial event clashes with our own. Need to work out if it's any different to the
+//                        // event we sent observers when they first observed
+//                        if initialCollection.elementsEqual(initialItems){
+//                            // If it's the same we want to suppress it totally
+//                            break;
+//                        }
+//                        else{
+//                            // If it's different, we need to manually diff Realm's .initial with our own
+//                            // and provide that diff as the real initial event.
+//                            let tempCollection = CollectionProperty(initialItems)
+//                            
+//                            tempCollection.skip(1).observeNext(observer.next).disposeIn(bag)
+//                            tempCollection.replace(initialCollection.items(), performDiff: true)
+//                            break;
+//                        }
+//                    }
+//                    else {
+//                        let insertIndexes = (initialCollection.startIndex ..< initialCollection.endIndex).map {$0}
+//                        let changeSet = CollectionChangeset(collection: initialCollection.items(), inserts: insertIndexes, deletes: [], updates: [])
+//                        observer.next(changeSet)
+//                    }
+//                    
+//                case .Update(let updatedCollection, let deletions, let insertions, let modifications):
+//                    let changeSet = CollectionChangeset(collection: updatedCollection.items(), inserts: insertions, deletes: deletions, updates: modifications)
+//                    observer.next(changeSet)
+//
+//                case .Error(let error):
+//
+//                    // An error occurred while opening the Realm file on the background worker thread
+//                    fatalError("\(error)")
+//                    break
+//                }
             }
             
-            
-            bag.addDisposable(BlockDisposable{
+            bag.add(disposable: BlockDisposable{
                 notificationToken.stop()
             })
             return bag
@@ -91,7 +138,8 @@ open class RealmDataSource<Item: Object>: DataSourceType where Item: Equatable {
 
     fileprivate let disposeBag = DisposeBag()
 
-    public init<C: RealmCollectionType>(items: C) where C.Element == Item {
+    public init<C: RealmCollection>(items: C) where C.Element == Item {
         self.collection = AnyRealmCollection(items)
     }
 }
+

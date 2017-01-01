@@ -20,7 +20,7 @@ class RealmNotificationTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        realm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().UUIDString))
+        realm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().uuidString))
     }
     
     override func tearDown() {
@@ -31,24 +31,24 @@ class RealmNotificationTests: XCTestCase {
     }
     
     func testStartingConditions() {
-        expect(self.realm.objects(Cat).count).to(equal(0))
+        expect(self.realm.objects(Cat.self).count).to(equal(0))
     }
     
     func testInsertNotificationWorking(){
         var insertions = 0
         
-        let token = realm.objects(Cat).addNotificationBlock { (changeSet:RealmCollectionChange) in
+        let token = realm.objects(Cat.self).addNotificationBlock { (changeSet:RealmCollectionChange) in
             switch changeSet {
-            case .Initial(let cats):
+            case .initial(let cats):
                 insertions += cats.count
-            case .Update(_):
+            case .update(_):
                 fail("Update should never be called")
-            case .Error:
+            case .error:
                 fail("Error should never be called")
             }
         }
 
-        bag.addDisposable(BlockDisposable{token.stop()})
+        bag.add(disposable: BlockDisposable{token.stop()})
         
         try! realm.write {
             realm.add(Cat(value: ["name" : "Mr Catzz"]))
