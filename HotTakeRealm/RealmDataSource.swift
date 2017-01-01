@@ -17,7 +17,7 @@ extension AnyRealmCollection{
     }
 }
 
-public class RealmDataSource<Item: Object where Item: Equatable>: DataSourceType {
+open class RealmDataSource<Item: Object>: DataSourceType where Item: Equatable {
 
     /* NB: It's important that the Realm collection is already sorted before it's passed to the RealmDataSource:
 
@@ -26,11 +26,11 @@ public class RealmDataSource<Item: Object where Item: Equatable>: DataSourceType
      > If you need to maintain order of insertion, some solutions are proposed here.
      */
 
-    public func items() -> [Item] {
+    open func items() -> [Item] {
         return self.collection.items()
     }
 
-    public func mutations() -> Stream<CollectionChangeset<[Item]>> {
+    open func mutations() -> Signal1<ObservableArrayEvent<Item>> {
         return Stream<CollectionChangeset<[Item]>> { observer in
             let bag = DisposeBag()
             
@@ -87,11 +87,11 @@ public class RealmDataSource<Item: Object where Item: Equatable>: DataSourceType
         }
     }
 
-    private let collection: AnyRealmCollection<Item>
+    fileprivate let collection: AnyRealmCollection<Item>
 
-    private let disposeBag = DisposeBag()
+    fileprivate let disposeBag = DisposeBag()
 
-    public init<C: RealmCollectionType where C.Element == Item>(items: C) {
+    public init<C: RealmCollectionType>(items: C) where C.Element == Item {
         self.collection = AnyRealmCollection(items)
     }
 }

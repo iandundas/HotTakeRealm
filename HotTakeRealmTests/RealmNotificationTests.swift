@@ -20,7 +20,7 @@ class RealmNotificationTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        realm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: NSUUID().UUIDString))
+        realm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().UUIDString))
     }
     
     override func tearDown() {

@@ -13,7 +13,7 @@ class Cat: Object {
     dynamic var name = ""
     dynamic var miceEaten: Int = 0
     
-    dynamic var id: String = NSUUID().UUIDString
+    dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"
     }

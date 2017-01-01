@@ -28,8 +28,8 @@ class RealmDatasourceTests: XCTestCase {
         super.setUp()
         bag = DisposeBag()
         
-        nonEmptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: NSUUID().UUIDString))
-        emptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: NSUUID().UUIDString))
+        nonEmptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().UUIDString))
+        emptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().UUIDString))
         
         try! nonEmptyRealm.write {
             nonEmptyRealm.add(Cat(value: ["name" : "Cat A", "miceEaten": 0]))
