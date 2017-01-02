@@ -31,7 +31,7 @@ public func equal(_ expected: ObservableArrayChange?) -> MatcherFunc<ObservableA
         case let (.updates(a), .updates(b)): return a == b
         case let (.move(a), .move(b)): return a == b
         default:
-            fatalError("@id This matcher does not support \(concreteActualValue) vs \(expectedValue) comparisons yet..")
+            return false
         }
     }
 }
