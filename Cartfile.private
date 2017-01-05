@@ -1,1 +1,1 @@
-github "Quick/Nimble" "v4.1.0"
+github "quick/Nimble" ~> 5.1
