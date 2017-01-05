@@ -71,10 +71,7 @@ open class RealmDataSource<Item: Object>: DataSourceType where Item: Equatable {
                         let usable = tempCollection.filter { (event: ObservableArrayEvent<Item>) -> Bool in
                             return event.isSignpost || event.affectedCount > 0
                         }.skip(first:1) // reset
-                        
-                        usable.observeNext(with: { (event) in
-                            print("EVENT:: \(event)")
-                        })
+
                         usable.observeNext(with: observer.next).disposeIn(bag)
                         tempCollection.replace(with: realmInitialCollection.filter {_ in true}, performDiff: true)
                         break;

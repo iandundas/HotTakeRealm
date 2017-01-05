@@ -11,10 +11,9 @@ import ReactiveKit
 import Nimble
 import RealmSwift
 import HotTakeCore
+import Bond
 
 @testable import HotTakeRealm
-
-typealias ChangesetProperty = ReactiveKit.Property<CollectionChangeset<[Cat]>?>
 
 class ContainerWithRealmTests: XCTestCase {
     
@@ -28,8 +27,8 @@ class ContainerWithRealmTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        nonEmptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().UUIDString))
-        emptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().UUIDString))
+        nonEmptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().uuidString))
+        emptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().uuidString))
         
         try! nonEmptyRealm.write {
             nonEmptyRealm.add(Cat(value: ["name" : "Cat A", "miceEaten": 0]))
@@ -50,154 +49,139 @@ class ContainerWithRealmTests: XCTestCase {
         super.tearDown()
     }
     
+    func testReceiveOnlyOneResetEventWhenNoMutationPerformed(){
+        container = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self)).encloseInContainer()
+        
+        let firstEvent = ChangesetProperty(nil)
+        container.collection.element(at: 0).bind(to: firstEvent)
+        
+        let secondEvent = ChangesetProperty(nil)
+        container.collection.element(at: 1).bind(to: secondEvent)
+        
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
+        expect(secondEvent.value).toEventually(beNil())
+    }
+    
     func testBasicInsertBindingWhereObserverIsBoundBeforeInsert() {
-        container = RealmDataSource<Cat>(items:emptyRealm.objects(Cat)).encloseInContainer()
+        container = RealmDataSource<Cat>(items:emptyRealm.objects(Cat.self)).encloseInContainer()
         
-        let firstChangeset = ChangesetProperty(nil)
-        container.collection.elementAt(0).bindTo(firstChangeset)
+        let firstEvent = ChangesetProperty(nil)
+        container.collection.element(at: 0).bind(to: firstEvent)
         
-        let secondChangeset = ChangesetProperty(nil)
-        container.collection.elementAt(1).bindTo(secondChangeset)
+        let thirdEvent = ChangesetProperty(nil)
+        container.collection.element(at: 2).bind(to: thirdEvent)
+        
+        expect(firstEvent.value?.source).to(haveCount(0))
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
         
         try! emptyRealm.write {
             emptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
             emptyRealm.add(Cat(value: ["name" : "Mr Lolz"]))
         }
-        
-        expect(firstChangeset.value?.collection.count).toEventually(equal(0), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
-        
-        expect(secondChangeset.value?.collection.count).toEventually(equal(2), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(equal(2), timeout: 2)
+
+        expect(thirdEvent.value?.source).toEventually(haveCount(2), timeout: 2)
+        expect(thirdEvent.value?.change).to(equal(ObservableArrayChange.inserts([0,1])))
     }
     
     func testBasicInsertBindingWhereObserverIsBoundAfterInsertWithoutDelay() {
-        container = RealmDataSource<Cat>(items:emptyRealm.objects(Cat)).encloseInContainer()
+        container = RealmDataSource<Cat>(items:emptyRealm.objects(Cat.self)).encloseInContainer()
 
         try! emptyRealm.write {
             emptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
             emptyRealm.add(Cat(value: ["name" : "Mr Lolz"]))
         }
 
-        let firstChangeset = ChangesetProperty(nil)
-        container.collection.elementAt(0).bindTo(firstChangeset)
+        let firstEvent = ChangesetProperty(nil)
+        container.collection.element(at: 0).bind(to: firstEvent)
         
-        let secondChangeset = ChangesetProperty(nil)
-        container.collection.elementAt(1).bindTo(secondChangeset)
+        expect(firstEvent.value?.source).toEventually(haveCount(2), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
+
+        let thirdEvent = ChangesetProperty(nil)
+        container.collection.element(at: 2).bind(to: thirdEvent)
         
-        expect(firstChangeset.value?.collection.count).toEventually(equal(0), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
-        
-        expect(secondChangeset.value?.collection.count).toEventually(equal(2), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(equal(2), timeout: 2)
+        expect(thirdEvent.value).toEventually(beNil())
     }
     
     func testBasicInsertBindingWhereObserverIsBoundAfterInsertWithADelay() {
-        container = RealmDataSource<Cat>(items:emptyRealm.objects(Cat)).encloseInContainer()
+        container = RealmDataSource<Cat>(items:emptyRealm.objects(Cat.self)).encloseInContainer()
         
         try! emptyRealm.write {
             emptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
             emptyRealm.add(Cat(value: ["name" : "Mr Lolz"]))
         }
 
+        let firstEvent = ChangesetProperty(nil)
+        let thirdEvent = ChangesetProperty(nil)
         
-        let firstChangeset = ChangesetProperty(nil)
-        let secondChangeset = ChangesetProperty(nil)
-        
-        Queue.main.after(1){
-            self.container.collection.elementAt(0).bindTo(firstChangeset)
-            self.container.collection.elementAt(1).bindTo(secondChangeset)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.container.collection.element(at: 0).bind(to: firstEvent)
+            self.container.collection.element(at: 1).bind(to: thirdEvent)
         }
         
-        expect(firstChangeset.value?.collection.count).toEventually(equal(2), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
+        expect(firstEvent.value?.source).toEventually(haveCount(2), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
         
-        expect(secondChangeset.value?.collection.count).toEventually(beNil(), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(beNil(), timeout: 2)
+        expect(thirdEvent.value?.source).toEventually(beNil(), timeout: 2)
     }    
     
     /* Test it sends a single event containing 0 insert, 0 update, 0 delete when initially an empty container */
     func testInitialSubscriptionSendsASingleCurrentStateEventWhenInitiallyEmpty(){
+        container = RealmDataSource<Cat>(items: emptyRealm.objects(Cat.self)).encloseInContainer()
         
-        var observeCallCount = 0
-        var inserted = false
-        var updated = false
-        var deleted = false
+        let firstEvent = ChangesetProperty(nil)
+        let secondEvent = ChangesetProperty(nil)
         
-        container = RealmDataSource<Cat>(items: emptyRealm.objects(Cat)).encloseInContainer()
+        container.collection.element(at: 0).bind(to: firstEvent)
+        container.collection.element(at: 1).bind(to: secondEvent)
         
-        container.collection
-            .observeNext { changes in
-                guard changes.hasNoMutations else {fail("Must be an initial event"); return}
-                
-                observeCallCount += 1
-                
-                inserted = inserted || changes.inserts.count > 0
-                updated = updated || changes.updates.count > 0
-                deleted = deleted || changes.deletes.count > 0
-                
-            }.disposeIn(disposeBag)
+        expect(firstEvent.value?.change).to(equal(ObservableArrayChange.reset))
+        expect(firstEvent.value?.dataSource.array).to(equal([Cat]()))
         
-        expect(observeCallCount).toEventually(equal(1), timeout: 1)
-        expect(inserted).toEventually(equal(false), timeout: 1)
-        expect(updated).toEventually(equal(false), timeout: 1)
-        expect(deleted).toEventually(equal(false), timeout: 1)
+        expect(secondEvent.value?.change).to(beNil())
     }
     
     
     /* Test it sends an event containing 0 insert, 0 update, 0 delete when initially non-empty container */
     func testInitialSubscriptionSendsASingleCurrentStateEventWhenInitiallyNonEmpty(){
         
-        container = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat)).encloseInContainer()
+        container = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self)).encloseInContainer()
         
-        var observeCallCount = 0
-        var inserted = false
-        var updated = false
-        var deleted = false
+        let firstEvent = ChangesetProperty(nil)
+        let secondEvent = ChangesetProperty(nil)
         
-        container.collection
-            .observeNext { changes in
-                guard changes.hasNoMutations else {fail("Must be an initial event"); return}
-                
-                observeCallCount += 1
-                
-                inserted = inserted || changes.inserts.count > 0
-                updated = updated || changes.updates.count > 0
-                deleted = deleted || changes.deletes.count > 0
-                
-            }.disposeIn(disposeBag)
+        container.collection.element(at: 0).bind(to: firstEvent)
+        container.collection.element(at: 1).bind(to: secondEvent)
         
-        expect(observeCallCount).toEventually(equal(1), timeout: 1)
-        expect(inserted).toEventually(equal(false), timeout: 1)
-        expect(updated).toEventually(equal(false), timeout: 1)
-        expect(deleted).toEventually(equal(false), timeout: 1)
+        expect(firstEvent.value?.change).to(equal(ObservableArrayChange.reset))
+        expect(firstEvent.value?.dataSource.array).to(haveCount(4))
+        expect(secondEvent.value?.change).to(beNil())
     }
     
     func testReplacingEmptyDatasourceWithAnotherEmptyDatasourceProducedNoUpdateSignals(){
         
-        let emptyRealmDataSource = RealmDataSource<Cat>(items:emptyRealm.objects(Cat))
+        let emptyRealmDataSource = RealmDataSource<Cat>(items:emptyRealm.objects(Cat.self))
         let emptyManualDataSource = ManualDataSource(items: [Cat]())
-        
         container = emptyRealmDataSource.encloseInContainer()
         
-        var observeCallCount = 0
+        let firstEvent = ChangesetProperty(nil)
+        let secondEvent = ChangesetProperty(nil)
         
-        container.collection
-            .observeNext { changes in
-                observeCallCount += 1
-            }.disposeIn(disposeBag)
+        container.collection.element(at: 0).bind(to: firstEvent)
+        container.collection.element(at: 1).bind(to: secondEvent)
         
         // replace with another, identical datasource:
         container.datasource = emptyManualDataSource.eraseType()
         
-        // important because second one can be mistaken for an .Initial event (0,0,0) and we don't want 2x .Initial events.
-        // i.e. expect only to have the initial insert changeset (when first binded) and not the subsequent insert.
-        expect(observeCallCount).toEventually(equal(1), timeout: 3)
+        expect(firstEvent.value?.change).to(equal(ObservableArrayChange.reset))
+        expect(firstEvent.value?.dataSource.array).to(haveCount(0))
+        
+        expect(secondEvent.value?.change).to(beNil())
     }
     
     func testReplacingEmptyDatasourceWithAnotherEmptyDatasourceAndAddingItemsToInitialDataSourceProducesNoUpdateSignals(){
         
-        let emptyRealmDataSource = AnyDataSource(RealmDataSource<Cat>(items:emptyRealm.objects(Cat)))
+        let emptyRealmDataSource = AnyDataSource(RealmDataSource<Cat>(items:emptyRealm.objects(Cat.self)))
         let emptyManualDataSource = AnyDataSource(ManualDataSource(items: [Cat]()))
         
         var observeCallCount = 0
@@ -221,7 +205,7 @@ class ContainerWithRealmTests: XCTestCase {
     
     func testReplacingNonEmptyDatasourceWithAnIdenticalNonEmptyDatasourceProducedNoUpdateSignals(){
         
-        let nonemptyRealmDataSourceA = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat))
+        let nonemptyRealmDataSourceA = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))
         
         container = nonemptyRealmDataSourceA.encloseInContainer()
         
@@ -233,7 +217,7 @@ class ContainerWithRealmTests: XCTestCase {
             }.disposeIn(disposeBag)
         
         // replace with another, identical datasource:
-        let nonemptyRealmDataSourceB = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat))
+        let nonemptyRealmDataSourceB = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))
         container.datasource = nonemptyRealmDataSourceB.eraseType()
         
         // important because second one can be mistaken for an .Initial event (0,0,0) and we don't want 2x .Initial events.
@@ -242,123 +226,81 @@ class ContainerWithRealmTests: XCTestCase {
     }
     
     func testReplacingNonEmptyDatasourceWithAnEmptyDatasourceProducesCorrectDeleteSignals(){
-        
-        var observeCallCount = 0
-        var deleteCount = 0
-        
         // contains 4 items
-        container = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat)).encloseInContainer()
-        container.collection
-            .observeNext { changes in
-                observeCallCount += 1
-                deleteCount += changes.deletes.count
-                
-            }.disposeIn(disposeBag)
+        container = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self)).encloseInContainer()
+        
+        let firstChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 0).bind(to: firstChangeset)
+        let thirdChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 2).bind(to: thirdChangeset)
+        
+        expect(firstChangeset.value?.source).to(haveCount(4))
         
         // Contains 0 items
         let emptyManualDataSource = AnyDataSource(ManualDataSource(items: [Cat]()))
         container.datasource = emptyManualDataSource
         
         // expect only to have the initial insert changeset (when first binded) and not the subsequent insert.
-        expect(observeCallCount).toEventually(equal(2), timeout: 3)
-        expect(deleteCount).toEventually(equal(4), timeout: 3)
-        
+        expect(thirdChangeset.value?.source).to(haveCount(0))
+        expect(thirdChangeset.value?.change).to(equal(ObservableArrayChange.deletes([0,1,2,3])))
     }
     
     func testReplacingEmptyDatasourceWithANonEmptyDatasourceProducesCorrectInsertSignals(){
         
-        var observeCallCount = 0
-        var insertCount = 0
-        
         // contains 0 items
         container = ManualDataSource(items: [Cat]()).encloseInContainer()
-        container.collection
-            .observeNext { changes in
-                observeCallCount += 1
-                insertCount += changes.inserts.count
-                
-            }.disposeIn(disposeBag)
+        
+        let firstChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 0).bind(to: firstChangeset)
+        let secondChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 1).bind(to: secondChangeset)
+        let thirdChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 2).bind(to: thirdChangeset)
+        let fourthChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 3).bind(to: fourthChangeset)
+        let fifthChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 4).bind(to: fifthChangeset)
+        let sixthChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 5).bind(to: sixthChangeset)
+        
         
         // replace with a datasource containing 4 items:
-        let nonEmptyRealmDataSource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat)).eraseType()
+        let nonEmptyRealmDataSource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self)).eraseType()
         container.datasource = nonEmptyRealmDataSource
         
         // expect only to have the initial insert changeset (when first binded) and not the subsequent insert.
-        expect(observeCallCount).toEventually(equal(2), timeout: 3)
-        expect(insertCount).toEventually(equal(4), timeout: 3)
+        expect(firstChangeset.value?.change).to(equal(ObservableArrayChange.reset))
+        expect(secondChangeset.value?.change).to(equal(ObservableArrayChange.beginBatchEditing))
+        expect(thirdChangeset.value?.dataSource.array).to(haveCount(4))
+        expect(thirdChangeset.value?.change).to(equal(ObservableArrayChange.deletes([]))) // TODO non-optimal, but no ideal way to filter these yet
+        
+        expect(fourthChangeset.value?.change).to(equal(ObservableArrayChange.inserts([0,1,2,3])))
+        expect(fifthChangeset.value?.change).to(equal(ObservableArrayChange.endBatchEditing))
+        expect(sixthChangeset.value?.change).to(beNil())
     }
     
-    
+
     func testReplacingNonEmptyDatasourceWithAnotherNonEmptyDatasourceContainingSomeDifferentItemsProducesCorrectMutationSignals(){
         
-        let dataSourceA = AnyDataSource(RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat).filter("miceEaten < 5"))) // 2 items (0, 3)
-        let dataSourceB = AnyDataSource(RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat).filter("miceEaten > 0"))) // 3 items (   3, 5, 100)
-        
-        var observeCallCount = 0
-        var insertCount = 0
-        var updateCount = 0
-        var deleteCount = 0
-        
+        let dataSourceA = AnyDataSource(RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self).filter("miceEaten < 5"))) // 2 items (0, 3)
+        let dataSourceB = AnyDataSource(RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self).filter("miceEaten > 0"))) // 3 items (   3, 5, 100)
         container = Container(datasource: dataSourceA)
-        container.collection
-            .observeNext { changes in
-                observeCallCount += 1
-                insertCount += changes.inserts.count
-                updateCount += changes.updates.count
-                deleteCount += changes.deletes.count
-                
-            }.disposeIn(disposeBag)
         
+        
+        let firstChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 0).bind(to: firstChangeset)
+        let thirdChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 2).bind(to: thirdChangeset)
+        let fourthChangeset = ChangesetProperty(nil)
+        container.collection.element(at: 3).bind(to: fourthChangeset)
+        
+        expect(firstChangeset.value?.change).to(equal(ObservableArrayChange.reset))
+        expect(firstChangeset.value?.source).to(haveCount(2))
+
         container.datasource = dataSourceB
         
-        // expect only to have the initial insert changeset (when first binded) and not the subsequent insert.
-        expect(observeCallCount).toEventually(equal(2), timeout: 3)
-        expect(insertCount).toEventually(equal(2), timeout: 3)
-        expect(updateCount).toEventually(equal(0), timeout: 3)
-        expect(deleteCount).toEventually(equal(1), timeout: 3)
+        expect(thirdChangeset.value?.change).to(equal(ObservableArrayChange.deletes([0])))
+        expect(fourthChangeset.value?.change).to(equal(ObservableArrayChange.inserts([1,2])))
     }
     
-    func testInsertingWhilstReplacingNonEmptyDatasourceWithAnotherNonEmptyDatasourceContainingCertainDifferentItemsProducesCorrectMutationSignals2(){
-        
-        // 2 items (0, 3)
-        let dataSourceA = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat).filter("miceEaten < 5")).eraseType()
-        
-        // 3 items (   3, 5, 100)
-        let dataSourceB = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat).filter("miceEaten > 0")).eraseType()
-        
-        var observeCallCount = 0
-        var insertCount = 0
-        var updateCount = 0
-        var deleteCount = 0
-        
-        container = Container(datasource: dataSourceA)
-        container.collection
-            .observeNext { changes in
-                if observeCallCount == 0 && !changes.hasNoMutations{
-                    fail("First event should be an initial event")
-                }
-                if observeCallCount > 0 && changes.hasNoMutations{
-                    fail("Subsequent events should not identify as first")
-                }
-                
-                observeCallCount += 1
-                insertCount += changes.inserts.count
-                updateCount += changes.updates.count
-                deleteCount += changes.deletes.count
-                
-            }.disposeIn(disposeBag)
-        
-        try! nonEmptyRealm.write {
-            nonEmptyRealm.add(Cat(value: ["name": "fluffy", "miceEaten": 0])) // skipped from seeig in insert due to same Run loop as datasource swap
-            nonEmptyRealm.add(Cat(value: ["name": "this one should appear", "miceEaten": 1000]))
-        }
-        
-        container.datasource = dataSourceB
-        
-        // expect only to have the initial insert changeset (when first binded) and not the subsequent insert.
-        expect(observeCallCount).toEventually(equal(2), timeout: 3)
-        expect(insertCount).toEventually(equal(3), timeout: 3)
-        expect(updateCount).toEventually(equal(0), timeout: 3)
-        expect(deleteCount).toEventually(equal(1), timeout: 3)
-    }
 }

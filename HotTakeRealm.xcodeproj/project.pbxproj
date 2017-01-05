@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3CA8B6A61E197F7400E5CC8F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA8B6A51E197F7400E5CC8F /* Helpers.swift */; };
+		3CA8B6A71E19A43000E5CC8F /* DatasourceContainerWithRealmTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEB6DEB1DEEBC1400D35A77 /* DatasourceContainerWithRealmTests.swift */; };
 		3CEB6DC61DEE9A3E00D35A77 /* HotTakeRealm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DBC1DEE9A3E00D35A77 /* HotTakeRealm.framework */; };
 		3CEB6DCD1DEE9A3E00D35A77 /* HotTakeRealm.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CEB6DBF1DEE9A3E00D35A77 /* HotTakeRealm.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3CEB6DD81DEEBAAE00D35A77 /* ReactiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CEB6DD71DEEBAAE00D35A77 /* ReactiveKit.framework */; };
@@ -283,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3CEB6DE71DEEBBE100D35A77 /* RealmNotificationTests.swift in Sources */,
+				3CA8B6A71E19A43000E5CC8F /* DatasourceContainerWithRealmTests.swift in Sources */,
 				3CEB6DF01DEEC0BD00D35A77 /* Cat.swift in Sources */,
 				3CA8B6A61E197F7400E5CC8F /* Helpers.swift in Sources */,
 				3CEB6DE61DEEBBE100D35A77 /* RealmDatasourceTests.swift in Sources */,
