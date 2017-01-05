@@ -12,7 +12,7 @@ import RealmSwift
 import ReactiveKit
 import Nimble
 import HotTakeCore
-
+import Bond
 @testable import HotTakeRealm
 
 class RealmDatasourceTests: XCTestCase {
@@ -28,8 +28,8 @@ class RealmDatasourceTests: XCTestCase {
         super.setUp()
         bag = DisposeBag()
         
-        nonEmptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: NSUUID().UUIDString))
-        emptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: NSUUID().UUIDString))
+        nonEmptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().uuidString))
+        emptyRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: UUID().uuidString))
         
         try! nonEmptyRealm.write {
             nonEmptyRealm.add(Cat(value: ["name" : "Cat A", "miceEaten": 0]))
@@ -45,201 +45,262 @@ class RealmDatasourceTests: XCTestCase {
         datasource = nil
         super.tearDown()
     }
-
-    func testBasicInsertBindingWhereObserverIsBoundBeforeInsert() {
-        datasource = RealmDataSource<Cat>(items:emptyRealm.objects(Cat))
-
-        let firstChangeset = ChangesetProperty(nil)
-        datasource.mutations().elementAt(0).bindTo(firstChangeset)
+    
+    func testInitialNotificationIsReceived(){
+        datasource = RealmDataSource<Cat>(items: nonEmptyRealm.objects(Cat.self))
         
-        let secondChangeset = ChangesetProperty(nil)
-        datasource.mutations().elementAt(1).bindTo(secondChangeset)
+        let firstEvent = ChangesetProperty(nil)
+        let secondEvent = ChangesetProperty(nil)
+        
+        datasource.mutations().element(at: 0).bind(to: firstEvent).disposeIn(bag)
+        datasource.mutations().element(at: 1).bind(to: secondEvent).disposeIn(bag)
+        
+        expect(firstEvent.value?.change).to(equal(ObservableArrayChange.reset))
+        expect(secondEvent.value?.change).to(beNil())
+    }
+    
+    func testInsertEventIsReceived(){
+        datasource = RealmDataSource<Cat>(items: emptyRealm.objects(Cat.self))
+        
+        let secondEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at: 1).bind(to: secondEvent).disposeIn(bag)
+        
+        let thirdEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at: 2).bind(to: thirdEvent).disposeIn(bag)
+        
+        let fourthEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at: 3).bind(to: fourthEvent).disposeIn(bag)
         
         try! emptyRealm.write {
             emptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
         }
         
-        expect(firstChangeset.value?.collection.count).toEventually(equal(0), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
+        expect(secondEvent.value?.change).toEventually(equal(ObservableArrayChange.beginBatchEditing), timeout:2)
+        expect(thirdEvent.value?.change).toEventually(equal(ObservableArrayChange.inserts([0])))
+        expect(fourthEvent.value?.change).toEventually(equal(ObservableArrayChange.endBatchEditing))
+    }
+    
+    func testDeleteEventIsReceived(){
+        datasource = RealmDataSource<Cat>(items: nonEmptyRealm.objects(Cat.self))
         
-        expect(secondChangeset.value?.collection.count).toEventually(equal(1), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(equal(1), timeout: 2)
+        let secondEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at: 1).bind(to: secondEvent).disposeIn(bag)
+        
+        let thirdEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at: 2).bind(to: thirdEvent).disposeIn(bag)
+        
+        let fourthEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at: 3).bind(to: fourthEvent).disposeIn(bag)
+        
+        try! nonEmptyRealm.write {
+            datasource.items().forEach(nonEmptyRealm.delete)
+        }
+        
+        expect(secondEvent.value?.change).toEventually(equal(ObservableArrayChange.beginBatchEditing))
+        expect(thirdEvent.value?.change).toEventually(equal(ObservableArrayChange.deletes([0])))
+        expect(fourthEvent.value?.change).toEventually(equal(ObservableArrayChange.endBatchEditing))
+    }
+    
+    
+    func testBasicInsertBindingWhereObserverIsBoundBeforeInsert() {
+        datasource = RealmDataSource<Cat>(items:emptyRealm.objects(Cat.self))
+
+        let firstEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at:0).bind(to: firstEvent)
+        
+        let thirdEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at:2).bind(to: thirdEvent)
+        
+        try! emptyRealm.write {
+            emptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
+        }
+
+        expect(firstEvent.value?.source).toEventually(beEmpty())
+
+        expect(thirdEvent.value?.source).toEventually(haveCount(1))
+        expect(thirdEvent.value?.change).toEventually(equal(ObservableArrayChange.inserts([0])))
     }
     
     func testBasicInsertBindingWhereObserverIsBoundAfterInsertWithoutDelay() {
-        datasource = RealmDataSource<Cat>(items:emptyRealm.objects(Cat))
+        datasource = RealmDataSource<Cat>(items:emptyRealm.objects(Cat.self))
         
         try! emptyRealm.write {
             emptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
         }
         
-        let firstChangeset = ChangesetProperty(nil)
-        datasource.mutations().elementAt(0).bindTo(firstChangeset)
+        let firstEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at:0).bind(to: firstEvent)
         
-        let secondChangeset = ChangesetProperty(nil)
-        datasource.mutations().elementAt(1).bindTo(secondChangeset)
+        let secondEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at:1).bind(to: secondEvent)
         
-        expect(firstChangeset.value?.collection.count).toEventually(equal(1), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
         
-        expect(secondChangeset.value?.collection.count).toEventually(beNil(), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(beNil(), timeout: 2)
-    }
-
-    func testBasicInsertBindingWhereObserverIsBoundAfterInsertWithADelay() {
-        datasource = RealmDataSource<Cat>(items:emptyRealm.objects(Cat))
+        expect(firstEvent.value?.source).toEventually(haveCount(1), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
         
-        try! emptyRealm.write {
-            emptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
-        }
-        
-        let firstChangeset = ChangesetProperty(nil)
-        let secondChangeset = ChangesetProperty(nil)
-        
-        Queue.main.after(1){
-            self.datasource.mutations().elementAt(0).bindTo(firstChangeset)
-            self.datasource.mutations().elementAt(1).bindTo(secondChangeset)
-        }
-        
-        expect(firstChangeset.value?.collection.count).toEventually(equal(1), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
-        
-        expect(secondChangeset.value?.collection.count).toEventually(beNil(), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(beNil(), timeout: 2)
+        expect(secondEvent.value).toEventually(beNil(), timeout: 2)
     }
     
+    func testBasicInsertBindingWhereObserverIsBoundAfterInsertWithADelay() {
+        datasource = RealmDataSource<Cat>(items:emptyRealm.objects(Cat.self))
+        
+        try! emptyRealm.write {
+            emptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
+        }
+        
+        let firstEvent = ChangesetProperty(nil)
+        let thirdEvent = ChangesetProperty(nil)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.datasource.mutations().element(at:0).bind(to: firstEvent)
+            self.datasource.mutations().element(at:1).bind(to: thirdEvent)
+        }
+        
+        expect(firstEvent.value?.source).toEventually(haveCount(1), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
+        
+        expect(thirdEvent.value).toEventually(beNil(), timeout: 2)
+    }
     
     
     func testBasicInsertBindingWhereObserverIsBoundBeforeInsertAndAnItemIsAlreadyAdded() {
-        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat))
+        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))
         
-        let firstChangeset = ChangesetProperty(nil)
-        datasource.mutations().elementAt(0).bindTo(firstChangeset)
+        let firstEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at:0).bind(to: firstEvent)
         
-        let secondChangeset = ChangesetProperty(nil)
-        datasource.mutations().elementAt(1).bindTo(secondChangeset)
+        let thirdEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at:2).bind(to: thirdEvent)
         
         try! nonEmptyRealm.write {
             nonEmptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
         }
         
-        expect(firstChangeset.value?.collection.count).toEventually(equal(1), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
+        expect(firstEvent.value?.source).toEventually(haveCount(1), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
         
-        expect(secondChangeset.value?.collection.count).toEventually(equal(2), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(equal(1), timeout: 2)
+        expect(thirdEvent.value?.change).toEventually(equal(ObservableArrayChange.inserts([1])), timeout: 2)
+        expect(thirdEvent.value?.source).toEventually(haveCount(2), timeout: 2)
     }
-    
+
     func testBasicInsertBindingWhereObserverIsBoundAfterInsertWithoutDelayAndAnItemIsAlreadyAdded() {
-        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat))
+        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))
         
         try! nonEmptyRealm.write {
             nonEmptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
         }
         
-        let firstChangeset = ChangesetProperty(nil)
-        datasource.mutations().elementAt(0).bindTo(firstChangeset)
+        let firstEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at:0).bind(to: firstEvent)
         
-        let secondChangeset = ChangesetProperty(nil)
-        datasource.mutations().elementAt(1).bindTo(secondChangeset)
+        let thirdEvent = ChangesetProperty(nil)
+        datasource.mutations().element(at:1).bind(to: thirdEvent)
         
-        expect(firstChangeset.value?.collection.count).toEventually(equal(2), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
+        expect(firstEvent.value?.source).toEventually(haveCount(2), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
         
-        expect(secondChangeset.value?.collection.count).toEventually(beNil(), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(beNil(), timeout: 2)
+        expect(thirdEvent.value).toEventually(beNil(), timeout: 2)
     }
     
-    
+
     func testBasicInsertBindingWhereObserverIsBoundAfterInsertWithADelayAndAnItemIsAlreadyAdded() {
-        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat))
+        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))
         
         try! nonEmptyRealm.write {
             nonEmptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
         }
         
-        let firstChangeset = ChangesetProperty(nil)
-        let secondChangeset = ChangesetProperty(nil)
+        let firstEvent = ChangesetProperty(nil)
+        let thirdEvent = ChangesetProperty(nil)
         
-        Queue.main.after(1){
-            self.datasource.mutations().elementAt(0).bindTo(firstChangeset)
-            self.datasource.mutations().elementAt(1).bindTo(secondChangeset)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.datasource.mutations().element(at:0).bind(to: firstEvent)
+            self.datasource.mutations().element(at:1).bind(to: thirdEvent)
         }
         
-        expect(firstChangeset.value?.collection.count).toEventually(equal(2), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
+        expect(firstEvent.value?.source).toEventually(haveCount(2), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
         
-        expect(secondChangeset.value?.collection.count).toEventually(beNil(), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(beNil(), timeout: 2)
+        expect(thirdEvent.value).toEventually(beNil(), timeout: 2)
     }
     
     
-    func testBasicDeleteWhereColletionIsEmptyWhenObservingAfterwards() {
-        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat))
+    func testBasicDeleteWhereDatasourceIsEmptyWhenObservingAfterwards() {
+        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))
         
         try! nonEmptyRealm.write {
             datasource.items().forEach(nonEmptyRealm.delete)
         }
         
-        let firstChangeset = ChangesetProperty(nil)
-        let secondChangeset = ChangesetProperty(nil)
+        let firstEvent = ChangesetProperty(nil)
+        let secondEvent = ChangesetProperty(nil)
         
-        self.datasource.mutations().elementAt(0).bindTo(firstChangeset)
-        self.datasource.mutations().elementAt(1).bindTo(secondChangeset)
+        self.datasource.mutations().element(at:0).bind(to: firstEvent)
+        self.datasource.mutations().element(at:1).bind(to: secondEvent)
     
-        expect(firstChangeset.value?.collection.count).toEventually(equal(0), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
+        expect(firstEvent.value?.source).toEventually(haveCount(0), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
         
-        expect(secondChangeset.value?.collection.count).toEventually(beNil(), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(beNil(), timeout: 2)
+        expect(secondEvent.value).toEventually(beNil(), timeout: 2)
     }
 
-    func testBasicDeleteWhereColletionEmptiesAfterObservingBeforehand() {
-        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat))
+    func testBasicDeleteWhereDatasourceEmptiesAfterObservingOnSameThread() {
+        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))
         
-        let firstChangeset = ChangesetProperty(nil)
-        self.datasource.mutations().elementAt(0).bindTo(firstChangeset)
-        let secondChangeset = ChangesetProperty(nil)
-        self.datasource.mutations().elementAt(1).bindTo(secondChangeset)
+        let firstEvent = ChangesetProperty(nil)
+        self.datasource.mutations().element(at:0).bind(to: firstEvent)
+        let thirdEvent = ChangesetProperty(nil)
+        self.datasource.mutations().element(at:2).bind(to: thirdEvent)
         
         
         try! nonEmptyRealm.write {
             datasource.items().forEach(nonEmptyRealm.delete)
         }
 
-        expect(firstChangeset.value?.collection.count).toEventually(equal(1), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
+        expect(firstEvent.value?.source).toEventually(haveCount(1), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
         
-        expect(secondChangeset.value?.collection.count).toEventually(equal(0), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
-        expect(secondChangeset.value?.deletes.count).toEventually(equal(1), timeout: 2)
+        expect(thirdEvent.value?.change).toEventually(equal(ObservableArrayChange.deletes([0])))
     }
     
-    
-    func testBasicUpdateWhereCollectionIsObservingBeforehandAfterDelay() {
-        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat))
+    func testBasicDeleteWhereDatasourceEmptiesAfterObservingBeforehand() {
+        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))
         
         let firstChangeset = ChangesetProperty(nil)
-        self.datasource.mutations().elementAt(0).bindTo(firstChangeset)
-        let secondChangeset = ChangesetProperty(nil)
-        self.datasource.mutations().elementAt(1).bindTo(secondChangeset)
+        self.datasource.mutations().element(at: 0).bind(to: firstChangeset)
+        let thirdChangeset = ChangesetProperty(nil)
+        self.datasource.mutations().element(at: 2).bind(to: thirdChangeset)
         
-        Queue.main.after(1){
+        try! nonEmptyRealm.write {
+            datasource.items().forEach(nonEmptyRealm.delete)
+        }
+        
+        expect(firstChangeset.value?.source).to(haveCount(1))
+        
+        expect(thirdChangeset.value?.source).toEventually(haveCount(0))
+        expect(thirdChangeset.value?.change).toEventually(equal(ObservableArrayChange.deletes([0])))
+    }
+    
+    func testBasicUpdateWhereDatasourceIsObservingBeforehandAfterDelay() {
+        datasource = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))
+        
+        let firstEvent = ChangesetProperty(nil)
+        self.datasource.mutations().element(at:0).bind(to: firstEvent)
+        let thirdEvent = ChangesetProperty(nil)
+        self.datasource.mutations().element(at:2).bind(to: thirdEvent)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             let item = self.datasource.items()[0]
             try! self.nonEmptyRealm.write {
                 item.name = "new name"
             }
         }
         
-        expect(firstChangeset.value?.collection.count).toEventually(equal(1), timeout: 2)
-        expect(firstChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
-        expect(firstChangeset.value?.updates.count).toEventually(equal(0), timeout: 2)
-        expect(firstChangeset.value?.deletes.count).toEventually(equal(0), timeout: 2)
+        expect(firstEvent.value?.source).toEventually(haveCount(1), timeout: 2)
+        expect(firstEvent.value?.change).toEventually(equal(ObservableArrayChange.reset))
 
-        expect(secondChangeset.value?.collection.count).toEventually(equal(1), timeout: 2)
-        expect(secondChangeset.value?.inserts.count).toEventually(equal(0), timeout: 2)
-        expect(secondChangeset.value?.updates.count).toEventually(equal(1), timeout: 2)
-        expect(secondChangeset.value?.deletes.count).toEventually(equal(0), timeout: 2)
+        expect(thirdEvent.value?.source).toEventually(haveCount(1), timeout: 2)
+        expect(thirdEvent.value?.change).to(equal(ObservableArrayChange.updates([0])))
 
     }
     

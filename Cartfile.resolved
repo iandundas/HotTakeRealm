@@ -1,4 +1,5 @@
-github "Quick/Nimble" "v4.1.0"
-github "ReactiveKit/ReactiveKit" "v2.1.1"
+github "quick/Nimble" "v5.1.1"
+github "ReactiveKit/ReactiveKit" "v3.1.1"
 github "realm/realm-cocoa" "v1.1.0"
-github "iandundas/HotTakeCore" "v0.9.0"
+github "ReactiveKit/Bond" "v5.2.0"
+github "iandundas/HotTakeCore" "v1.0.0"
