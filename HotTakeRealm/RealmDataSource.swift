@@ -36,18 +36,58 @@ open class RealmDataSource<Item: Object>: DataSourceType where Item: Equatable {
         return Signal1<ObservableArrayEvent<Item>> { observer in
             let bag = DisposeBag()
             
-//            var initialChangeSet: CollectionChangeset? = CollectionChangeset.initial(self.items())
-//            observer.next(initialChangeSet!)
+
+            // Observation started, send the .reset event:
+            var initialItems: [Item]? = self.items()
+            let source = ObservableArray(initialItems!)
+            let event = ObservableArrayEvent<Item>(change: .reset, source: source)
+            observer.next(event)
+            
             
             let notificationToken = self.collection.addNotificationBlock {(changes: RealmCollectionChange) in
-
-                
                 switch changes {
                     
-                case .initial(let initialCollection):
-                    let source = ObservableArray(initialCollection.filter{_ in true})
-                    let event = ObservableArrayEvent<Item>(change: .reset, source: source)
-                    observer.next(event)
+                case .initial(let realmInitialCollection):
+//                    let source = ObservableArray(initialCollection.filter{_ in true})
+//                    let event = ObservableArrayEvent<Item>(change: .reset, source: source)
+//                    observer.next(event)
+                    
+
+                    guard let observerInitialItems = initialItems else {fatalError("Misunderstanding..")}
+                    
+                    // Realm .initial event clashes with our own. Need to work out if it's any different to the
+                    // event we sent observers when they first observed
+                    
+                
+                    initialItems = nil
+                    if realmInitialCollection.elementsEqual(observerInitialItems){
+                        // If it's the same then it's a non-event - we should suppress it totally
+                        break;
+                    }
+                    else{
+                        // If it's different, we need to manually diff Realm's .initial with our own
+                        // and provide that diff as the real initial event.
+                        let tempCollection = MutableObservableArray(observerInitialItems)
+                        let usable = tempCollection.filter { (event: ObservableArrayEvent<Item>) -> Bool in
+                            return event.isSignpost || event.affectedCount > 0
+                        }.skip(first:1) // reset
+                        
+                        usable.observeNext(with: { (event) in
+                            print("EVENT:: \(event)")
+                        })
+                        usable.observeNext(with: observer.next).disposeIn(bag)
+                        tempCollection.replace(with: realmInitialCollection.filter {_ in true}, performDiff: true)
+                        break;
+                    }
+                    
+//                    }
+//                    else {
+//                        let insertIndexes = (initialCollection.startIndex ..< initialCollection.endIndex).map {$0}
+//                        let changeSet = CollectionChangeset(collection: initialCollection.items(), inserts: insertIndexes, deletes: [], updates: [])
+//                        observer.next(changeSet)
+//                    }
+                    
+                    break
                     
                 case .update(let updatedCollection, let deletions, let insertions, let modifications):
                     guard deletions.count > 0 || insertions.count > 0 || modifications.count > 0 else {break}
