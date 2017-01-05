@@ -1,5 +1,4 @@
-# github "iandundas/HotTakeCore" "v0.9.2"
-git "/Users/ian/AppsDev/Hottake/HotTakeCore" "feature/swift-3"
+github "iandundas/HotTakeCore" "v1.0.0"
 github "ReactiveKit/Bond" "v5.2.0"
 github "realm/realm-cocoa" "v1.1.0"
 github "ReactiveKit/ReactiveKit" "v3.1.1"
