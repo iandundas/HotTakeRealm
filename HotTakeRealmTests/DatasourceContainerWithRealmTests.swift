@@ -190,7 +190,7 @@ class ContainerWithRealmTests: XCTestCase {
         container.collection
             .observeNext { changes in
                 observeCallCount += 1
-            }.disposeIn(disposeBag)
+            }.dispose(in: disposeBag)
         
         container.datasource = emptyManualDataSource
         
@@ -214,7 +214,7 @@ class ContainerWithRealmTests: XCTestCase {
         container.collection
             .observeNext { changes in
                 observeCallCount += 1
-            }.disposeIn(disposeBag)
+            }.dispose(in: disposeBag)
         
         // replace with another, identical datasource:
         let nonemptyRealmDataSourceB = RealmDataSource<Cat>(items:nonEmptyRealm.objects(Cat.self))

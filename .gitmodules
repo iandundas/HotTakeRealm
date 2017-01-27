@@ -10,9 +10,9 @@
 [submodule "Carthage/Checkouts/realm-cocoa"]
 	path = Carthage/Checkouts/realm-cocoa
 	url = https://github.com/realm/realm-cocoa.git
-[submodule "Carthage/Checkouts/Diff.swift"]
-	path = Carthage/Checkouts/Diff.swift
-	url = https://github.com/wokalski/Diff.swift.git
 [submodule "Carthage/Checkouts/Bond"]
 	path = Carthage/Checkouts/Bond
 	url = https://github.com/ReactiveKit/Bond.git
+[submodule "Carthage/Checkouts/Diff.swift"]
+	path = Carthage/Checkouts/Diff.swift
+	url = https://github.com/wokalski/Diff.swift.git
