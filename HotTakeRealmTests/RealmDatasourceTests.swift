@@ -52,8 +52,8 @@ class RealmDatasourceTests: XCTestCase {
         let firstEvent = ChangesetProperty(nil)
         let secondEvent = ChangesetProperty(nil)
         
-        datasource.mutations().element(at: 0).bind(to: firstEvent).disposeIn(bag)
-        datasource.mutations().element(at: 1).bind(to: secondEvent).disposeIn(bag)
+        datasource.mutations().element(at: 0).bind(to: firstEvent).dispose(in: bag)
+        datasource.mutations().element(at: 1).bind(to: secondEvent).dispose(in: bag)
         
         expect(firstEvent.value?.change).to(equal(ObservableArrayChange.reset))
         expect(secondEvent.value?.change).to(beNil())
@@ -63,13 +63,13 @@ class RealmDatasourceTests: XCTestCase {
         datasource = RealmDataSource<Cat>(items: emptyRealm.objects(Cat.self))
         
         let secondEvent = ChangesetProperty(nil)
-        datasource.mutations().element(at: 1).bind(to: secondEvent).disposeIn(bag)
+        datasource.mutations().element(at: 1).bind(to: secondEvent).dispose(in: bag)
         
         let thirdEvent = ChangesetProperty(nil)
-        datasource.mutations().element(at: 2).bind(to: thirdEvent).disposeIn(bag)
+        datasource.mutations().element(at: 2).bind(to: thirdEvent).dispose(in: bag)
         
         let fourthEvent = ChangesetProperty(nil)
-        datasource.mutations().element(at: 3).bind(to: fourthEvent).disposeIn(bag)
+        datasource.mutations().element(at: 3).bind(to: fourthEvent).dispose(in: bag)
         
         try! emptyRealm.write {
             emptyRealm.add(Cat(value: ["name" : "Mr Cow"]))
@@ -84,13 +84,13 @@ class RealmDatasourceTests: XCTestCase {
         datasource = RealmDataSource<Cat>(items: nonEmptyRealm.objects(Cat.self))
         
         let secondEvent = ChangesetProperty(nil)
-        datasource.mutations().element(at: 1).bind(to: secondEvent).disposeIn(bag)
+        datasource.mutations().element(at: 1).bind(to: secondEvent).dispose(in: bag)
         
         let thirdEvent = ChangesetProperty(nil)
-        datasource.mutations().element(at: 2).bind(to: thirdEvent).disposeIn(bag)
+        datasource.mutations().element(at: 2).bind(to: thirdEvent).dispose(in: bag)
         
         let fourthEvent = ChangesetProperty(nil)
-        datasource.mutations().element(at: 3).bind(to: fourthEvent).disposeIn(bag)
+        datasource.mutations().element(at: 3).bind(to: fourthEvent).dispose(in: bag)
         
         try! nonEmptyRealm.write {
             datasource.items().forEach(nonEmptyRealm.delete)
