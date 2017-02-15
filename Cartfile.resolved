@@ -1,6 +1,5 @@
 github "wokalski/Diff.swift" "0.5.1"
-github "quick/Nimble" "v5.1.1"
 github "ReactiveKit/ReactiveKit" "v3.3.0"
-github "realm/realm-cocoa" "v2.4.2"
+github "realm/realm-cocoa" "03411bc6198161e638167daa26d1d9a1b524f4ac"
 github "ReactiveKit/Bond" "6.0.0"
 github "iandundas/HotTakeCore" "v1.2.0"
